@@ -1,0 +1,190 @@
+IQ-TREE multicore version 2.4.0 for MacOS ARM 64-bit built Mar  8 2025
+Developed by Bui Quang Minh, Nguyen Lam Tung, Olga Chernomor, Heiko Schmidt,
+Dominik Schrempf, Michael Woodhams, Ly Trong Nhan, Thomas Wong
+
+Host:    MacBook-Air-de-Van-Praet-Rosalie.local (SSE4.2, 8 GB RAM)
+Command: iqtree-2.4.0-macOS/bin/iqtree2 -s Binome_04/H5N1_genomic_analyses_simulated_dataset_4-1.fas -m MF
+Seed:    244160 (Using SPRNG - Scalable Parallel Random Number Generator)
+Time:    Thu Mar 19 11:03:51 2026
+Kernel:  SSE2 - 1 threads (8 CPU cores detected)
+
+HINT: Use -nt option to specify number of threads because your CPU has 8 cores!
+HINT: -nt AUTO will automatically determine the best number of threads to use.
+
+Reading alignment file Binome_04/H5N1_genomic_analyses_simulated_dataset_4-1.fas ... Fasta format detected
+Reading fasta file: done in 0.00839901 secs using 85.89% CPU
+Alignment most likely contains DNA/RNA sequences
+Alignment has 46 sequences with 13635 columns, 648 distinct patterns
+532 parsimony-informative, 795 singleton sites, 12308 constant sites
+           Gap/Ambiguity  Composition  p-value
+Analyzing sequences: done in 6.29425e-05 secs using 77.85% CPU
+   1  sample_1     0.00%    passed     99.82%
+   2  sample_2     0.00%    passed     99.96%
+   3  sample_3     0.00%    passed     99.99%
+   4  sample_4     0.00%    passed     99.80%
+   5  sample_5     0.00%    passed     99.98%
+   6  sample_6     0.00%    passed     99.90%
+   7  sample_7     0.00%    passed     99.57%
+   8  sample_8     0.00%    passed     99.60%
+   9  sample_9     0.00%    passed     99.57%
+  10  sample_10    0.00%    passed     99.83%
+  11  sample_11    0.00%    passed     99.98%
+  12  sample_12    0.00%    passed     99.96%
+  13  sample_13    0.00%    passed     99.96%
+  14  sample_14    0.00%    passed     99.67%
+  15  sample_15    0.00%    passed     99.94%
+  16  sample_16    0.00%    passed     99.99%
+  17  sample_17    0.00%    passed    100.00%
+  18  sample_18    0.00%    passed     99.99%
+  19  sample_19    0.00%    passed     99.98%
+  20  sample_20    0.00%    passed     99.60%
+  21  sample_21    0.00%    passed     99.06%
+  22  sample_22    0.00%    passed     99.41%
+  23  sample_23    0.00%    passed     99.35%
+  24  sample_24    0.00%    passed     99.33%
+  25  sample_25    0.00%    passed     99.88%
+  26  sample_26    0.00%    passed     99.95%
+  27  sample_27    0.00%    passed     99.97%
+  28  sample_28    0.00%    passed     99.92%
+  29  sample_29    0.00%    passed     99.98%
+  30  sample_30    0.00%    passed     99.86%
+  31  sample_31    0.00%    passed    100.00%
+  32  sample_32    0.00%    passed     99.98%
+  33  sample_33    0.00%    passed     99.98%
+  34  sample_34    0.00%    passed     99.92%
+  35  sample_35    0.00%    passed     99.96%
+  36  sample_36    0.00%    passed     99.71%
+  37  sample_37    0.00%    passed     99.11%
+  38  sample_38    0.00%    passed     98.89%
+  39  sample_39    0.00%    passed    100.00%
+  40  sample_40    0.00%    passed    100.00%
+  41  sample_41    0.00%    passed     99.94%
+  42  sample_42    0.00%    passed     99.98%
+  43  sample_43    0.00%    passed     99.53%
+  44  sample_44    0.00%    passed     99.45%
+  45  sample_45    0.00%    passed     99.66%
+  46  sample_46    0.00%    passed     99.96%
+****  TOTAL        0.00%  0 sequences failed composition chi2 test (p-value<5%; df=3)
+
+
+Create initial parsimony tree by phylogenetic likelihood library (PLL)... 0.002 seconds
+Perform fast likelihood tree search using GTR+I+G model...
+Estimate model parameters (epsilon = 5.000)
+Perform nearest neighbor interchange...
+Estimate model parameters (epsilon = 1.000)
+1. Initial log-likelihood: -30930.832
+Optimal log-likelihood: -30930.829
+Rate parameters:  A-C: 0.96612  A-G: 1.14305  A-T: 0.95259  C-G: 1.02581  C-T: 0.95334  G-T: 1.00000
+Base frequencies:  A: 0.250  C: 0.253  G: 0.250  T: 0.246
+Proportion of invariable sites: 0.451
+Gamma shape alpha: 3.953
+Parameters optimization took 1 rounds (0.022 sec)
+Time for fast ML tree search: 0.090 seconds
+
+NOTE: ModelFinder requires 9 MB RAM!
+ModelFinder will test up to 484 DNA models (sample size: 13635 epsilon: 0.100) ...
+ No. Model         -LnL         df  AIC          AICc         BIC
+  1  GTR+F         30971.822    97  62137.644    62139.049    62867.123
+  2  GTR+F+I       30931.053    98  62058.106    62059.540    62795.105
+  3  GTR+F+G4      30930.723    98  62057.446    62058.880    62794.445
+  4  GTR+F+I+G4    30930.827    99  62059.654    62061.117    62804.173
+  5  GTR+F+R2      30933.581    99  62065.162    62066.625    62809.681
+  6  GTR+F+R3      30930.863    101 62063.725    62065.248    62823.285
+ 14  GTR+F+I+R2    30931.052    100 62062.105    62063.597    62814.144
+ 15  GTR+F+I+R3    30930.906    102 62065.812    62067.365    62832.892
+ 24  SYM+I         30931.458    95  62052.916    62054.263    62767.353
+ 25  SYM+G4        30931.132    95  62052.264    62053.612    62766.702
+ 26  SYM+I+G4      30931.234    96  62054.468    62055.844    62776.426
+ 46  TVM+F+I       30933.109    97  62060.217    62061.621    62789.695
+ 47  TVM+F+G4      30932.761    97  62059.521    62060.926    62788.999
+ 48  TVM+F+I+G4    30932.867    98  62061.734    62063.167    62798.732
+ 68  TVMe+I        30933.572    94  62055.144    62056.463    62762.061
+ 69  TVMe+G4       30933.230    94  62054.459    62055.778    62761.376
+ 70  TVMe+I+G4     30933.334    95  62056.669    62058.016    62771.106
+ 90  TIM3+F+I      30931.373    96  62054.747    62056.122    62776.705
+ 91  TIM3+F+G4     30931.051    96  62054.101    62055.477    62776.059
+ 92  TIM3+F+I+G4   30931.148    97  62056.297    62057.701    62785.775
+112  TIM3e+I       30931.774    93  62049.547    62050.838    62748.944
+113  TIM3e+G4      30931.456    93  62048.912    62050.204    62748.309
+114  TIM3e+I+G4    30931.548    94  62051.096    62052.415    62758.013
+134  TIM2+F+I      30931.128    96  62054.257    62055.633    62776.215
+135  TIM2+F+G4     30930.792    96  62053.583    62054.959    62775.541
+136  TIM2+F+I+G4   30930.897    97  62055.794    62057.199    62785.273
+156  TIM2e+I       30931.615    93  62049.230    62050.522    62748.627
+157  TIM2e+G4      30931.284    93  62048.567    62049.858    62747.964
+158  TIM2e+I+G4    30931.388    94  62050.776    62052.095    62757.693
+178  TIM+F+I       30931.426    96  62054.851    62056.227    62776.809
+179  TIM+F+G4      30931.096    96  62054.193    62055.568    62776.151
+180  TIM+F+I+G4    30931.196    97  62056.392    62057.797    62785.871
+200  TIMe+I        30931.915    93  62049.831    62051.122    62749.227
+201  TIMe+G4       30931.590    93  62049.181    62050.472    62748.577
+202  TIMe+I+G4     30931.691    94  62051.381    62052.700    62758.298
+222  TPM3u+F+I     30933.433    95  62056.866    62058.214    62771.304
+223  TPM3u+F+G4    30933.079    95  62056.157    62057.505    62770.595
+224  TPM3u+F+I+G4  30933.180    96  62058.361    62059.737    62780.319
+244  TPM3+I        30933.891    92  62051.782    62053.045    62743.658
+245  TPM3+G4       30933.549    92  62051.099    62052.363    62742.975
+246  TPM3+I+G4     30933.651    93  62053.301    62054.592    62752.698
+266  TPM2u+F+I     30933.171    95  62056.342    62057.690    62770.780
+267  TPM2u+F+G4    30932.817    95  62055.634    62056.981    62770.071
+268  TPM2u+F+I+G4  30932.927    96  62057.854    62059.230    62779.812
+288  TPM2+I        30933.731    92  62051.462    62052.726    62743.339
+289  TPM2+G4       30933.381    92  62050.761    62052.025    62742.638
+290  TPM2+I+G4     30933.490    93  62052.980    62054.271    62752.377
+310  K3Pu+F+I      30933.470    95  62056.940    62058.288    62771.378
+311  K3Pu+F+G4     30933.121    95  62056.241    62057.588    62770.679
+312  K3Pu+F+I+G4   30933.226    96  62058.453    62059.829    62780.411
+332  K3P+I         30934.032    92  62052.063    62053.327    62743.940
+333  K3P+G4        30933.688    92  62051.375    62052.639    62743.251
+334  K3P+I+G4      30933.793    93  62053.585    62054.876    62752.982
+354  TN+F+I        30931.432    95  62052.863    62054.211    62767.301
+355  TN+F+G4       30931.103    95  62052.206    62053.553    62766.643
+356  TN+F+I+G4     30931.204    96  62054.408    62055.784    62776.366
+376  TNe+I         30931.924    92  62047.847    62049.111    62739.724
+377  TNe+G4        30931.599    92  62047.197    62048.461    62739.074
+378  TNe+I+G4      30931.699    93  62049.398    62050.689    62748.794
+398  HKY+F+I       30933.476    94  62054.953    62056.272    62761.870
+399  HKY+F+G4      30933.128    94  62054.256    62055.575    62761.174
+400  HKY+F+I+G4    30933.234    95  62056.469    62057.816    62770.906
+420  K2P+I         30934.040    91  62050.080    62051.316    62734.436
+421  K2P+G4        30933.696    91  62049.392    62050.628    62733.748
+422  K2P+I+G4      30933.801    92  62051.602    62052.865    62743.478
+442  F81+F+I       30934.076    93  62054.152    62055.443    62753.548
+443  F81+F+G4      30933.727    93  62053.454    62054.745    62752.851
+444  F81+F+I+G4    30933.834    94  62055.667    62056.986    62762.584
+464  JC+I          30934.638    90  62049.276    62050.486    62726.112
+465  JC+G4         30934.293    90  62048.586    62049.796    62725.422
+466  JC+I+G4       30934.399    91  62050.797    62052.034    62735.153
+Akaike Information Criterion:           TNe+G4
+Corrected Akaike Information Criterion: TNe+G4
+Bayesian Information Criterion:         JC+G4
+Best-fit model: JC+G4 chosen according to BIC
+
+All model information printed to Binome_04/H5N1_genomic_analyses_simulated_dataset_4-1.fas.model.gz
+CPU time for ModelFinder: 2.089 seconds (0h:0m:2s)
+Wall-clock time for ModelFinder: 2.104 seconds (0h:0m:2s)
+
+NOTE: 3 MB RAM (0 GB) is required!
+Estimate model parameters (epsilon = 0.010)
+1. Initial log-likelihood: -30934.293
+Optimal log-likelihood: -30934.293
+Rate parameters:  A-C: 1.00000  A-G: 1.00000  A-T: 1.00000  C-G: 1.00000  C-T: 1.00000  G-T: 1.00000
+Base frequencies:  A: 0.250  C: 0.250  G: 0.250  T: 0.250
+Gamma shape alpha: 0.537
+Parameters optimization took 1 rounds (0.014 sec)
+Wrote distance file to... 
+BEST SCORE FOUND : -30934.293
+Total tree length: 0.110
+
+Total number of iterations: 0
+CPU time used for tree search: 0.000 sec (0h:0m:0s)
+Wall-clock time used for tree search: 0.000 sec (0h:0m:0s)
+Total CPU time used: 2.107 sec (0h:0m:2s)
+Total wall-clock time used: 2.123 sec (0h:0m:2s)
+
+Analysis results written to: 
+  IQ-TREE report:                Binome_04/H5N1_genomic_analyses_simulated_dataset_4-1.fas.iqtree
+  Tree used for ModelFinder:     Binome_04/H5N1_genomic_analyses_simulated_dataset_4-1.fas.treefile
+  Screen log file:               Binome_04/H5N1_genomic_analyses_simulated_dataset_4-1.fas.log
+
+Date and Time: Thu Mar 19 11:03:53 2026
