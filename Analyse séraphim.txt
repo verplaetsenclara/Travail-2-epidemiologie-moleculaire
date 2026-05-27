@@ -1,0 +1,252 @@
+setwd("~/Documents/Master_1/BINGF432/TPBINGF432/Binome_04/BEAST_binome4")
+install.packages("devtools"); library(devtools)
+install_github("sdellicour/seraphim/unix_OS")
+library(seraphim)
+
+install.packages("diagram")
+library(diagram)
+
+# chargement de l'arbre annoté TreeAnnotator
+mcc_tre=readAnnotatedNexus("Tree_anotator_output.tree") 
+# Définition de la date d'échantillonnage la plus récente 
+mostRecentSamplingDatum=2024.1693989071039
+# Extraction des caractéristiques spatiotemporelles 
+mcc_tab=mccTreeExtractions(mcc_tre, mostRecentSamplingDatum)
+# Sauvegarde des données extraites
+write.csv(mcc_tab,"H5N1Rv2.csv",row.names = F,quote = F)
+mcc_tab=read.csv("H5N1Rv2.csv",head=T)
+
+localTreesDirectory="Extracted_trees"
+allTrees=scan(file ="Binome_4.trees",what = "",sep="\n",quiet=T)
+# configuration des paramètres d'échantillonnage des arbres 
+burnIn=0
+randomSampling=FALSE
+nberOfTreesToSample=1000
+mostRecentSamplingDatum=2024.17
+coordinateAttributeName="location"
+# Extraction et découpage des sous arbres
+treeExtractions(localTreesDirectory, allTrees,burnIn,randomSampling,nberOfTreesToSample,mostRecentSamplingDatum,coordinateAttributeName)
+
+# Génération des polygones de dispersion spatio-temporelle
+polygons=suppressWarnings(spreadGraphic1(mcc_tre,mcc_tab))
+nberOfExtractionFiles=nberOfTreesToSample
+prob=0.8
+startDatum=2023.7
+precision=1/52 #une semaine à la fois 
+polygons=suppressWarnings(spreadGraphic2(localTreesDirectory,nberOfExtractionFiles,prob,startDatum,precision))
+# Première version de la carte
+# Création d'un dégradé Mauve -> rose -> Vert
+colour_scale = colorRampPalette(c("darkorchid4", "mediumpurple1", "lightsalmon1", "seagreen2", "forestgreen"))(100)
+minYear = 2023.777; maxYear = 2024.17
+
+endYears_indices = round(((mcc_tab[,"endYear"] - minYear) / (maxYear - minYear)) * 99) + 1
+endYears_colours = colour_scale[endYears_indices]
+
+#attribution des couleurs aux polygones
+polygons_colours = rep(NA, length(polygons))
+for (i in 1:length(polygons)) {
+  date = as.numeric(names(polygons[[i]]))
+  polygon_index=round((((date-minYear)/(maxYear-minYear))*99)+1)
+  polygon_index = max(1, min(100, polygon_index))
+  polygons_colours[i]=paste0(colour_scale[polygon_index],"40")
+}
+
+# Création de figures 
+borders = shapefile("~/Documents/Master_1/BINGF432/TPBINGF432/Binome_04/BEAST_binome4/Fichiers GIS pour les analyses génomiques-20260205/International_borders_shapefile/Only_international_borders.shp")
+library(raster)
+template_raster = raster("Fichiers GIS pour les analyses génomiques-20260205/Raster_template_Europe_area.tif")
+
+dev.new(width=7, height=7)
+par(mar=c(4,4,4,6), oma=c(1,1,1,0), mgp=c(2,0.5,0), lwd=0.2, bty="o")
+plot(template_raster, col="white", box=F, axes=F, colNA="grey90", legend=F)
+for (i in 1:length(polygons)) {
+  plot(polygons[[i]], axes=F, col=polygons_colours[i], add=T, border=NA)
+}
+plot(borders, add=T, lwd=0.1, border="gray10")
+
+for (i in 1:dim(mcc_tab)) {
+  curvedarrow(cbind(mcc_tab[i,"startLon"],mcc_tab[i,"startLat"]),
+              cbind(mcc_tab[i,"endLon"],mcc_tab[i,"endLat"]), arr.length=0,
+              arr.width=0, lwd=0.2, lty=1, lcol="gray10", arr.col=NA,
+              arr.pos=F, curve=0.1, dr=NA, endhead=F)
+}
+for (i in dim(mcc_tab):1) {
+  if (i == 1) {
+    points(mcc_tab[i,"startLon"], mcc_tab[i,"startLat"], pch=16,
+           col=colour_scale, cex=0.8)
+    points(mcc_tab[i,"startLon"], mcc_tab[i,"startLat"], pch=1,
+           col="gray10", cex=0.8)
+  }
+  points(mcc_tab[i,"endLon"], mcc_tab[i,"endLat"], pch=16,
+         col=endYears_colours[i], cex=0.8)
+  points(mcc_tab[i,"endLon"], mcc_tab[i,"endLat"], pch=1,
+         col="gray10", cex=0.8)
+}
+
+# Marges
+par(mar=c(4, 4, 4, 8)) 
+
+# 2. Ajout de la légende avec le package fields
+library(fields)
+
+# Ici : barre entre 88% et 90% de la largeur, et 20% à 80% de la hauteur.
+image.plot(legend.only=TRUE, 
+           zlim=c(minYear, maxYear), 
+           col=colour_scale, 
+           smallplot=c(0.88, 0.90, 0.2, 0.8), 
+           legend.args=list(text="Année", side=4, line=2.5, cex=0.8),
+           axis.args=list(cex.axis=0.7))
+
+# 3. Tes dernières lignes pour les axes (inchangées)
+rect(xmin(template_raster), ymin(template_raster), xmax(template_raster),
+     ymax(template_raster), xpd=T, lwd=0.2)
+axis(1, c(ceiling(xmin(template_raster)), floor(xmax(template_raster))),
+     pos=ymin(template_raster), mgp=c(0,0.4,0), cex.axis=0.7, lwd=0, lwd.tick=0.2,
+     padj=-0.8, tck=-0.01, col.axis="gray30")
+axis(2, c(ceiling(ymin(template_raster)), floor(ymax(template_raster))),
+     pos=xmin(template_raster), mgp=c(0,0.6,0), cex.axis=0.7, lwd=0, lwd.tick=0.2,
+     padj=1, tck=-0.01, col.axis="gray30")
+
+
+
+# ==============================================================================
+# Figure résultats 
+# ==============================================================================
+
+# remise à 0 de l'affichage 
+graphics.off()
+close.screen(all.screens = TRUE)
+
+library(raster)
+library(sp)
+if(!require("maps")) install.packages("maps", repos="https://cloud.r-project.org/")
+
+# 1. Configuration propre du fichier de sortie PNG
+png("figure_finale_résultats_travail_2.png", width = 15, height = 8, units = "in", res = 300)
+
+# Extraction dynamique des limites géographiques du raster d'Europe
+zoom_lon = c(-12, 26)  
+zoom_lat = c(36, 72)   
+
+# 2. Découpage de l'espace graphique vierge et étanche
+split.screen(c(1, 2))             # Divise en 2 colonnes (haut/bas)
+split.screen(c(2, 1), screen = 2) # Divise la colonne droite en 2 lignes (droite/gauche)
+
+
+# ------------------------------------------------------------------------------
+# Gauche 
+# ------------------------------------------------------------------------------
+screen(1)
+# bty = "n" supprime l'ancien cadre automatique, bty = "o" dans box() fera le cadre propre
+par(mar = c(4, 4, 4, 9), lwd = 0.2, bty = "n", xpd = FALSE)
+
+# Initialisation du repère cartésien
+plot(1, type = "n", xlim = zoom_lon, ylim = zoom_lat, xlab = "", ylab = "", axes = FALSE)
+
+# Fond de mer gris clair uniforme
+rect(zoom_lon[1], zoom_lat[1], zoom_lon[2], zoom_lat[2], col = "grey90", border = NA)
+
+# Dessin des pays en blanc 
+map("world", regions = c("France", "Germany", "Belgium", "Netherlands", "Luxembourg", 
+                         "UK", "Ireland", "Switzerland", "Italy", "Austria", "Denmark", 
+                         "Poland", "Czech Republic", "Slovakia", "Spain", "Portugal",
+                         "Norway", "Sweden", "Finland"), 
+    col = "white", fill = TRUE, border = "gray40", lwd = 0.3, add = TRUE)
+
+# Superposition des polygones HPD seraphim
+for (i in 1:length(polygons)) { 
+  plot(polygons[[i]], col = polygons_colours[i], add = TRUE, border = NA) 
+}
+
+# Tracé des flèches de transmission courbes
+for (i in 1:dim(mcc_tab)[1]) {
+  curvedarrow(cbind(mcc_tab[i,"startLon"], mcc_tab[i,"startLat"]), 
+              cbind(mcc_tab[i,"endLon"], mcc_tab[i,"endLat"]), 
+              arr.length = 0, arr.width = 0, lwd = 0.2, lty = 1, lcol = "gray10", 
+              arr.col = NA, arr.pos = FALSE, curve = 0.1, dr = NA, endhead = FALSE)
+}
+
+# Tracé des points d'échantillonnage
+for (i in dim(mcc_tab)[1]:1) {
+  if (i == 1) {
+    points(mcc_tab[i,"startLon"], mcc_tab[i,"startLat"], pch = 16, col = colour_scale[1], cex = 0.8)
+    points(mcc_tab[i,"startLon"], mcc_tab[i,"startLat"], pch = 1, col = "gray10", cex = 0.8)
+  }
+  points(mcc_tab[i,"endLon"], mcc_tab[i,"endLat"], pch = 16, col = endYears_colours[i], cex = 0.8)
+  points(mcc_tab[i,"endLon"], mcc_tab[i,"endLat"], pch = 1, col = "gray10", cex = 0.8)
+}
+
+# CADRE DE LA CARTE : box() applique un rectangle parfait délimité à la zone de la carte
+box(lwd = 0.5, bty = "o")
+
+# Graduations de la carte propres sans lignes traversantes
+axis(1, at = seq(zoom_lon[1], zoom_lon[2], by = 10), 
+     labels = paste0(seq(zoom_lon[1], zoom_lon[2], by = 10), "°"), 
+     cex.axis = 0.7, lwd = 0, lwd.tick = 0.4, tck = -0.015, col.axis = "gray30")
+
+axis(2, at = seq(zoom_lat[1], zoom_lat[2], by = 10), 
+     labels = paste0(seq(zoom_lat[1], zoom_lat[2], by = 10), "°N"), 
+     cex.axis = 0.7, lwd = 0, lwd.tick = 0.4, tck = -0.015, col.axis = "gray30", las = 1)
+
+# Échelle colorimétrique fields dans la marge droite
+par(xpd = NA)
+library(fields)
+image.plot(legend.only = TRUE, zlim = c(minYear, maxYear), col = colour_scale, smallplot = c(0.86, 0.88, 0.2, 0.8), 
+           legend.args = list(text = "Année", side = 4, line = 2.5, cex = 0.8), axis.args = list(cex.axis = 0.7))
+
+# Lettre-repère A
+text(zoom_lon[1], zoom_lat[2] + 1.5, "A", cex = 1.8, font = 2, adj = c(0,0))
+
+
+# ------------------------------------------------------------------------------
+# haut droite : arbre phylogénétique
+# ------------------------------------------------------------------------------
+screen(3)
+par(mar = c(3, 4, 3, 2), xpd = FALSE)
+
+plot(mcc_tre, show.tip.label = FALSE, edge.width = 0.6, direction = "rightwards")
+box(lwd = 0.5)
+title(main = "Arbre Phylogénétique Temps-Calibré (MCC)", line = 0.8, cex.main = 1)
+
+axis(1, at = seq(0, max(node.depth.edgelength(mcc_tre)), length.out = 5), 
+     labels = round(seq(minYear, maxYear, length.out = 5), 2), cex.axis = 0.7, lwd.tick = 0.4)
+
+par(xpd = NA)
+text(par("usr")[1], par("usr")[4] + (par("usr")[4] - par("usr")[3]) * 0.06, "B", cex = 1.8, font = 2, adj = c(0,0))
+
+
+# ------------------------------------------------------------------------------
+# bas droite : skygrid
+# ------------------------------------------------------------------------------
+skyline_data <- read.table("skyline_data.txt", header = TRUE, sep = "\t", skip = 1)
+screen(4)
+par(mar = c(4, 4, 3, 2), xpd = FALSE)
+
+col_time <- names(skyline_data)[1]
+col_median <- colnames(skyline_data)[grep("medi|median|mean", colnames(skyline_data), ignore.case = TRUE)[1]]
+col_lower <- colnames(skyline_data)[grep("low|lower", colnames(skyline_data), ignore.case = TRUE)[1]]
+col_upper <- colnames(skyline_data)[grep("up|upper", colnames(skyline_data), ignore.case = TRUE)[1]]
+
+# Remplacer la ligne du plot par celle-ci (ajout de "log" dans ylab)
+plot(skyline_data[, col_time], skyline_data[, col_median], type = "l", log = "y",
+     xlab = "Année", ylab = "Taille efficace Ne t (échelle log)", 
+     xlim = c(minYear, maxYear), col = "darkorchid4", lwd = 1.8, axes = FALSE)
+
+lines(skyline_data[, col_time], skyline_data[, col_lower], lty = 2, col = "orchid3", lwd = 0.8)
+lines(skyline_data[, col_time], skyline_data[, col_upper], lty = 2, col = "orchid3", lwd = 0.8)
+
+axis(1, cex.axis = 0.7, lwd.tick = 0.4)
+axis(2, cex.axis = 0.7, lwd.tick = 0.4)
+box(lwd = 0.5)
+title(main = "Dynamique Démographique Virale (SkyGrid Plot)", line = 0.8, cex.main = 1)
+
+par(xpd = NA)
+text(par("usr")[1], par("usr")[4] + (par("usr")[4] - par("usr")[3]) * 0.06, "C", cex = 1.8, font = 2, adj = c(0,0))
+
+
+# ==============================================================================
+# Energistrement et fermeture
+# ==============================================================================
+close.screen(all.screens = TRUE)
+dev.off()
+
